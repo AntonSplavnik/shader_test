@@ -59,25 +59,15 @@ make
 
 ## 🔄 Running Different Shaders
 
-1. Put your custom shaders anywhere (e.g., ./shaders/my.vert, ./shaders/my.frag)
+1. Put your custom shaders anywhere (e.g., `./shaders/my.vert`, `./shaders/my.frag`)
+2. Edit `main.c` in the `load_shaders()` function:
+   ```c
+   gl_init->vert_shader = load_file_to_string("./shaders/my.vert");
+   gl_init->frag_shader = load_file_to_string("./shaders/my.frag");
+   ```
+3. Rebuild: `make`
+4. Run again: `./raytracer`
 
-2. Edit main.c in the load_shaders() function:
-
-```c
-gl_init->vert_shader = load_file_to_string("./shaders/my.vert");
-gl_init->frag_shader = load_file_to_string("./shaders/my.frag");
-```
-
-3. Rebuild:
-
-```bash
-make
-```
-4. Run again:
-
-```bash
-./raytracer
-```
 ---
 
 ## 🎮 Controls
