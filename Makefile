@@ -1,6 +1,6 @@
 NAME = raytracer
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 # Directories
 SRC_DIR = .
@@ -24,9 +24,10 @@ ifeq ($(UNAME), Darwin)
 	PLATFORM_LIBS += -L$(GLFW_PATH)/lib -lglfw
 	CFLAGS += -I$(GLFW_PATH)/include
 else
-	# Linux and others
-	PLATFORM_LIBS = -ldl -pthread -lm
-	PLATFORM_LIBS += -lglfw
+    # Linux and others
+    PLATFORM_LIBS = -ldl -pthread -lm
+    PLATFORM_LIBS += -lglfw
+    PLATFORM_LIBS += -lGLEW -lGL
 endif
 
 # Default target

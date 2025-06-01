@@ -1,15 +1,15 @@
 #define GL_SILENCE_DEPRECATION
 #include "./MLX42/include/MLX42/MLX42.h"
-#include <OpenGL/OpenGL.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/_types/_int32_t.h>
+#include <stdint.h>
 
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
+# include <OpenGL/OpenGL.h>
+# include <OpenGL/gl3.h>
 #else
-#include <GL/glew.h>
+# include <GL/glew.h>
 #endif
 
 #define WIDTH 800
@@ -145,6 +145,8 @@ int shader_setup(t_gl_init *gl_init)
     glShaderSource(gl_init->vert, 1, &gl_init->vert_shader, NULL);
     glCompileShader(gl_init->vert);
 
+    printf("vert = glCreateShader()\nglShaderSource()\nglCompileShader()\n");
+
     // Check for errors
     GLint success;
     glGetShaderiv(gl_init->vert, GL_COMPILE_STATUS, &success);
@@ -155,6 +157,7 @@ int shader_setup(t_gl_init *gl_init)
         printf("Vertex shader error: %s\n", log);
         return 1;
     }
+    printf("glGetShaderiv()\n");
 
     gl_init->frag = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(gl_init->frag, 1, &gl_init->frag_shader, NULL);
@@ -167,6 +170,8 @@ int shader_setup(t_gl_init *gl_init)
         printf("Fragment shader error: %s\n", log);
         return 1;
     }
+    printf("frag = glCreateShader()\nglShaderSource()\nglCompileShader()\n");
+
 
     gl_init->program = glCreateProgram();
     glAttachShader(gl_init->program, gl_init->vert);
@@ -202,21 +207,34 @@ int32_t main(void)
 
 
     // MLX42 window setup
-    if ((gl_init.mlx = mlx_init(WIDTH, HEIGHT, "Ray Tracing Shader", true)) == NULL)
-    {
+    gl_init.mlx = mlx_init(WIDTH, HEIGHT, "Ray Tracing Shader", true);
+    if (!gl_init.mlx)
+    { 
         puts(mlx_strerror(mlx_errno));
-        return (EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
+    #ifndef __APPLE__
+    GLenum err = glewInit();
+    if (err != GLEW_OK)
+    {
+        fprintf(stderr, "GLEW error: %s\n", glewGetErrorString(err));
+        return 1;
+    }
+    printf("GLEW initialized!\n");
+    #endif
 
     // Set up key hooks
     mlx_key_hook(gl_init.mlx, key_hook, gl_init.mlx);
     // mlx_resize_hook(gl_init.mlx, resize_hook, &gl_init);
     
+    printf("MLX_key_hook()\n");
+
     
     // Load shaders from files
     if(load_shaders(&gl_init))
         return(1);
+    
 
     // shader setup
     if(shader_setup(&gl_init))
@@ -224,6 +242,7 @@ int32_t main(void)
 
     // quad setup
     quad_setup(&gl_init);
+
 
     // main loop
     mlx_loop_hook(gl_init.mlx, main_loop, &gl_init);
