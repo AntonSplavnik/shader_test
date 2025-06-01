@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/_types/_int32_t.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -18,11 +19,15 @@
 typedef struct s_gl_init
 {
     mlx_t     *mlx;
+    
+    int32_t     win_width;
+    int32_t     win_height;
 
     float   time_value;
 
     const char    *vert_shader;
     const char    *frag_shader;
+    
     GLuint  vert;
     GLuint  frag;
     GLuint  vao;
@@ -55,6 +60,18 @@ void key_hook(mlx_key_data_t keydata, void* param)
     }
 }
 
+/* void resize_hook(int32_t width, int32_t height, void* param)
+{
+    t_gl_init *gl_init = (t_gl_init*)param;
+
+    glViewport(0, 0, width, height);
+    glFlush();
+    glFinish();
+    gl_init->win_width = width;
+    gl_init->win_height = height;
+    
+} */
+
 void    gl_cleanup(t_gl_init *gl_init)
 {
     glDeleteProgram(gl_init->program);
@@ -76,12 +93,18 @@ void    main_loop(void *param)
     float       mouse_x_norm;
     float       mouse_y_norm;
 
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glViewport(0, 0, viewport[2], viewport[3]);
+    float fb_width = (float)viewport[2];
+    float fb_height = (float)viewport[3];
+    
+
     gl_init->time_value = mlx_get_time();
 
     mlx_get_mouse_pos(gl_init->mlx, &mouse_x, &mouse_y);
-
-    mouse_x_norm = mouse_x / (float)WIDTH;
-    mouse_y_norm = mouse_y / (float)HEIGHT;
+    mouse_x_norm = mouse_x / fb_width;
+    mouse_y_norm = mouse_y / fb_height;
 
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(gl_init->program);
@@ -91,22 +114,24 @@ void    main_loop(void *param)
     GLint loc_mouse = glGetUniformLocation(gl_init->program, "mouse");
 
     glUniform1f(loc_time, gl_init->time_value);
-    glUniform2f(loc_resolution, WIDTH, HEIGHT);
     glUniform2f(loc_mouse, mouse_x_norm, mouse_y_norm);
+    glUniform2f(loc_resolution, fb_width, fb_height);
 
     glBindVertexArray(gl_init->vao);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    printf("Window: %d x %d, Framebuffer: %d x %d\n",
+       gl_init->win_width, gl_init->win_height, viewport[2], viewport[3]);
 }
 
 void    quad_setup(t_gl_init *gl_init)
 {
-    float quad[8] =
-    {
-        -1, -1,
-        1, -1,
-        1, 1,
-        -1, 1
-    };
+float quad[] = {
+    -1.0f, -1.0f, // lower left
+     1.0f, -1.0f, // lower right
+    -1.0f,  1.0f, // upper left
+     1.0f,  1.0f  // upper right
+};
 
     glGenVertexArrays(1, &gl_init->vao);
     glBindVertexArray(gl_init->vao);
@@ -186,10 +211,15 @@ int32_t main(void)
         return (EXIT_FAILURE);
     }
 
-    // Set up key hook for ESC to close
-    mlx_key_hook(gl_init.mlx, key_hook, gl_init.mlx);
-    
+    // init values
+    gl_init.win_width = gl_init.mlx->width;
+    gl_init.win_height = gl_init.mlx->height;
 
+    // Set up key hooks
+    mlx_key_hook(gl_init.mlx, key_hook, gl_init.mlx);
+    // mlx_resize_hook(gl_init.mlx, resize_hook, &gl_init);
+    
+    
     // Load shaders from files
     if(load_shaders(&gl_init))
         return(1);
