@@ -43,17 +43,19 @@ git clone <this-repo>
 cd <this-repo>
 make
 ```
+---
 
 ### ▶️ Run
 ```bash
 ./raytracer
 ```
 
-By default, it loads these shaders:
+#### By default, it loads these shaders:
 
 ./shaders/animated/raytrace.vert
-
 ./shaders/animated/raytrace.frag
+
+---
 
 ### 🔄 Running Different Shaders
 
@@ -76,14 +78,16 @@ make
 ```bash
 ./raytracer
 ```
+---
 
-###🎮 Controls
+### 🎮 Controls
+
 ESC: Exit application
-
 Mouse: Position is passed to shader as a uniform (mouse)
 
+---
 
-###📁 Project Structure
+### 📁 Project Structure
 ``` bash
 .
 ├── main.c
@@ -94,6 +98,7 @@ Mouse: Position is passed to shader as a uniform (mouse)
 │       ├── raytrace.vert
 │       └── raytrace.frag
 ```
+---
 
 ### 🧹 Cleaning
 
@@ -102,8 +107,9 @@ make clean      # Remove object files
 make fclean     # Remove objects + binary
 make distclean  # Full clean (including MLX42)
 ```
+---
 
-###📝 Notes
+### 📝 Notes
 Designed for fast shader prototyping, not production rendering.
 If you see GLFW/OpenGL errors, double-check that dependencies are installed.
 For custom window size, change the WIDTH/HEIGHT defines in main.c.
