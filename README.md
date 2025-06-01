@@ -83,6 +83,7 @@ make
 ### 🎮 Controls
 
 ESC: Exit application
+
 Mouse: Position is passed to shader as a uniform (mouse)
 
 ---
