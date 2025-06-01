@@ -20,8 +20,8 @@ typedef struct s_gl_init
 {
     mlx_t     *mlx;
     
-    int32_t     win_width;
-    int32_t     win_height;
+/*     int32_t     win_width;
+    int32_t     win_height; */
 
     float   time_value;
 
@@ -119,9 +119,6 @@ void    main_loop(void *param)
 
     glBindVertexArray(gl_init->vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    printf("Window: %d x %d, Framebuffer: %d x %d\n",
-       gl_init->win_width, gl_init->win_height, viewport[2], viewport[3]);
 }
 
 void    quad_setup(t_gl_init *gl_init)
@@ -204,16 +201,13 @@ int32_t main(void)
     t_gl_init gl_init = {0};
 
 
-    // 1. Initialize MLX42
+    // MLX42 window setup
     if ((gl_init.mlx = mlx_init(WIDTH, HEIGHT, "Ray Tracing Shader", true)) == NULL)
     {
         puts(mlx_strerror(mlx_errno));
         return (EXIT_FAILURE);
     }
 
-    // init values
-    gl_init.win_width = gl_init.mlx->width;
-    gl_init.win_height = gl_init.mlx->height;
 
     // Set up key hooks
     mlx_key_hook(gl_init.mlx, key_hook, gl_init.mlx);
