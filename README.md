@@ -45,7 +45,7 @@ make
 ```
 ---
 
-### ▶️ Run
+## ▶️ Run
 ```bash
 ./raytracer
 ```
@@ -57,7 +57,7 @@ make
 
 ---
 
-### 🔄 Running Different Shaders
+## 🔄 Running Different Shaders
 
 1. Put your custom shaders anywhere (e.g., ./shaders/my.vert, ./shaders/my.frag)
 
@@ -80,7 +80,7 @@ make
 ```
 ---
 
-### 🎮 Controls
+## 🎮 Controls
 
 ESC: Exit application
 
@@ -88,7 +88,7 @@ Mouse: Position is passed to shader as a uniform (mouse)
 
 ---
 
-### 📁 Project Structure
+## 📁 Project Structure
 ``` bash
 .
 ├── main.c
@@ -101,7 +101,7 @@ Mouse: Position is passed to shader as a uniform (mouse)
 ```
 ---
 
-### 🧹 Cleaning
+## 🧹 Cleaning
 
 ``` bash
 make clean      # Remove object files
@@ -110,7 +110,7 @@ make distclean  # Full clean (including MLX42)
 ```
 ---
 
-### 📝 Notes
+## 📝 Notes
 Designed for fast shader prototyping, not production rendering.
 If you see GLFW/OpenGL errors, double-check that dependencies are installed.
 For custom window size, change the WIDTH/HEIGHT defines in main.c.
